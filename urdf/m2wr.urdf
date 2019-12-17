@@ -47,7 +47,7 @@
         <axis xyz="0 0 1"/>
         <parent link="base_link"/>
         <child link="front_caster"/>
-        <origin rpy="0 0 0" xyz="0.3 0 0"/>
+        <origin rpy="0 0 0" xyz="0.25 0 0.009"/>
     </joint>
 
     <link name="front_wheel">
@@ -135,9 +135,71 @@
     <child link="left_wheel"/>
     <origin rpy="-1.5708 0 0" xyz ="-0.3017 -0.1498 -0.1295"/>
     </joint>
+    <!--RADAR SENSOR -->
+    <link name="hokuyo_link">
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <box size="0.1 0.1 0.1"/>
+    </geometry>
+    </collision>
+<!--TODO: checar por que el sensor no esta detectando-->
+        <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+        <box size="0.1 0.1 0.1"/>
+         </geometry>
+        </visual>
+        
+        <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+        </inertial>
+        </link>
+        <joint name="hokuyo_joint" type="fixed">
+        <axis xyz="0 1 0" />
+        <origin xyz="0 0 0.2" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="hokuyo_link"/>
+        </joint>
+    <!-- DEFINE SENSOR  IN GAZEBO-->
+    <gazebo reference="hokuyo_link">
+    <sensor type="gpu_ray" name="hokuyo">
+    <pose>0 0 0 0 0 0</pose>
+    <visualize>false</visualize>
+    <update_rate>40</update_rate>
+    <ray>
+    <scan>
+    <horizontal>
+    <samples>720</samples>
+    <resolution>1</resolution>
+    <min_angle>-1.570796</min_angle>
+    <max_angle>1.570796</max_angle>
+    </horizontal>
+    </scan>
+    <range>
+    <min>0.10</min>
+    <max>30.0</max>
+    <resolution>0.01</resolution>
+    </range>
+    </ray>
+    <plugin name="gpu_laser" filename="libgazebo_ros_gpu_laser.so">
+    <topicName>/scan</topicName>
+    <frameName>hokuyo_link</frameName>
+    </plugin>
+    </sensor>
+    </gazebo>
 
     <!--LOAD DIFFERENTIAL DRIVE PLUGIN-->
+    
     <gazebo>
+         <plugin name="joint_state_publisher"
+                filename="libgazebo_ros_joint_state_publisher.so">
+        <jointName>front_caster_joint, front_wheel_joint</jointName>
+         <legacyMode>false</legacyMode>
+        </plugin>
+
         <plugin name="differential_drive_controller"
                 filename="libgazebo_ros_diff_drive.so">
         <legacyMode>false</legacyMode>
@@ -148,8 +210,12 @@
         <wheelDiameter>0.07</wheelDiameter>
         <publishWheelJointState>true</publishWheelJointState>
         </plugin>
+
+        
+
     </gazebo>
     
+   
     </robot>
 
     

@@ -7,4 +7,8 @@
 <!-- Spawn a robot model in Gazebo, taking the description from the parameter server-->    
     <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"
     args="-param robot_description -urdf -model m2wr"/>
+<!-- Add node state publisher -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
+        
+    
 </launch>
