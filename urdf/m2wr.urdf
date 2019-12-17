@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<robot name="tortoisebot">
+    <link name="base_link">
+    <visual>
+        <geometry>
+            <box size="0.6 0.3 0.3"/>
+        </geometry>
+        <material name="silver">
+            <color rgba="0.95 0.55 0.23 1"/>
+        </material>
+    </visual>
+
+    <collision>
+        <geometry>
+            <box size="0.6 0.3 0.3"/>
+        </geometry>>
+    </collision>>
+
+    <inertial>
+        <mass value="1.0"/>
+         <inertia ixx="0.015" ixy="0.0" ixz="0.0"
+          iyy="0.0375" iyz="0.0" izz="0.0375"/>
+    </inertial>
+
+    </link>
+        
+    <link name="front_caster">
+        <visual>
+            <geometry>
+            <box size="0.1 0.1 0.3"/>
+            </geometry>
+            <material name="silver"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.1 0.1 0.3"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.00083" ixy="0.0" ixz="0.0"
+             iyy="0.00083" iyz="0.0" izz="0.00016"/>
+        </inertial>
+    </link>
+
+    <joint name="front_caster_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="base_link"/>
+        <child link="front_caster"/>
+        <origin rpy="0 0 0" xyz="0.3 0 0"/>
+    </joint>
+
+    <link name="front_wheel">
+        <visual>
+            <geometry>
+            <cylinder length="0.05" radius="0.035"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.07 0.07 0.05"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="0.01"/>
+            <inertia ixx="0.000447291666666667" ixy="0.0" ixz="0.0"
+                 iyy="0.000447291666666667" iyz="0.0" izz="6.125e-05"/>
+        </inertial>
+
+    </link>
+
+    <joint name="front_wheel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="front_caster"/>
+    <child link="front_wheel"/>
+    <origin rpy="-1.5708 0 0" xyz="0.05 0 -.15"/>
+    </joint>
+    
+
+    <link name="right_wheel">
+        <visual>
+        <geometry>
+            <cylinder length="0.05" radius="0.035"/>
+        </geometry>
+        <material name="black"/>
+        </visual>
+          <collision>
+            <geometry>
+                <box size="0.07 0.07 0.05"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+             <mass value="0.01"/>
+            <inertia ixx="0.000447291666666667" ixy="0.0" ixz="0.0"
+                 iyy="0.000447291666666667" iyz="0.0" izz="6.125e-05"/>
+        </inertial>
+    </link>
+
+    <joint name="right_wheel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin rpy="-1.5708 0 0" xyz="-0.3 0.14 -0.13"/>
+    </joint>
+    
+
+
+    <link name="left_wheel">
+        <visual>
+        <geometry>
+        <cylinder length="0.05" radius="0.035"/>
+        </geometry>
+        <material name="black"/>
+        </visual>
+          <collision>
+            <geometry>
+                <box size="0.07 0.07 0.05"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+             <mass value="0.01"/>
+            <inertia ixx="0.000447291666666667" ixy="0.0" ixz="0.0"
+                 iyy="0.000447291666666667" iyz="0.0" izz="6.125e-05"/>
+        </inertial>
+    </link>
+
+    <joint name="left_whel_joint" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin rpy="-1.5708 0 0" xyz ="-0.3017 -0.1498 -0.1295"/>
+    </joint>
+    
+    </robot>
+
+    

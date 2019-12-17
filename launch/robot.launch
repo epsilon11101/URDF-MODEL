@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+<!-- Load the RObot URDF model into the parameter server -->
+    <param name="robot_description" textfile="$(find m2wr_description)/urdf/m2wr.urdf"/>
+<!-- Start Gazebo with an empty world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
+<!-- Spawn a robot model in Gazebo, taking the description from the parameter server-->    
+    <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"
+    args="-param robot_description -urdf -model m2wr"/>
+</launch>
