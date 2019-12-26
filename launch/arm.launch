@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <launch>
     <!--Load the contents of the file via rosparam into ROS param server-->
-    <rosparam file="$(find m2wr_description)/config/controllers.yaml" command="load"  />
+    <rosparam file="$(find m2wr_description)/config/arm_cont.yaml" command="load"  />
     <!--Load the ARMBOT URDF model into the parameter server -->
-    <param name="robot_description" textfile="$(find m2wr_description)/urdf/arm.urdf"/>
+    <param name="robot_description" textfile="$(find m2wr_description)/urdf/prueba.urdf"/>
     <!-- Start Gazebo Empty world -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch" />
     <!-- Spawn a ARMBOT in Gazebo, taking the description from the param server -->

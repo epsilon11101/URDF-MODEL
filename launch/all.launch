@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find m2wr_description)/launch/arm.launch" />
+    <include file="$(find armMIT)/launch/move_group.launch" />
+    <include file="$(find armMIT)/launch/moveit_rviz.launch">
+        <arg name="config" default="True"/>
+    </include>
+</launch>
