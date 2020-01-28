@@ -1,0 +1,529 @@
+<?xml version="1.0" ?>
+<robot name="odamArm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find odarm)/urdf/kinect.urdf.xacro"/>
+<xacro:sensor_kinect name="kinect" parent="base_link" xyz="0 0.7 1.5" rpy="0 1.5 1.57" />
+
+
+    <xacro:property name="camera_link" value="0.01" />
+    <xacro:macro name="inertia_cal" params="xx xy xz yy yz zz mass vol">
+
+        <inertial>
+
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <mass value="${mass}" />
+            <inertia ixx="${xx*mass/vol}" ixy="${xy*mass/vol}" ixz="${xz*mass/vol}" iyy="${yy*mass/vol}" iyz="${yz*mass/vol}" izz="${zz*mass/vol}" />
+        </inertial>
+    </xacro:macro>
+
+
+    <link name="world" />
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <mesh filename="package://odarm/meshes/link1.dae" scale="1 1 1" />
+            </geometry>
+            <material name="blue">
+                <color rgba="${0/255} ${0/255} ${255/255} 1.0" />
+            </material>
+            <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0" />
+        </visual>
+
+        <xacro:inertia_cal xx="1.000000" xy="0.000011" xz="-0.000014" yy="0.985006" yz="-0.172521" zz="0.985006" mass="0.000340" vol="0.000727" />
+    </link>
+
+
+    <joint name="fixed" type="fixed">
+        <parent link="world" />
+        <child link="base_link" />
+    </joint>
+
+    <!-- -  - - - - - - - SHOULDER- - - - - - - - - - - -  -->
+    <link name="link1">
+
+        <visual>
+            <geometry>
+                <mesh filename="package://odarm/meshes/link2.dae" scale="1 1 1" />
+            </geometry>
+            <material name="orange">
+                <color rgba="${255/255} ${140/255} ${0/255} 1.0" />
+            </material>
+            <origin xyz="0.0 -0.0045 -0.03" rpy="0.0 0.0 0.0" />
+        </visual>
+
+        <collision>
+            <origin xyz="0.0 -0.0045 -0.03" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://odarm/meshes/boxL2.dae" scale="1 1 1" />
+            </geometry>
+        </collision>
+
+        <xacro:inertia_cal xx="0.998722" xy="-0.050154" xz="0.006288" yy="0.947029" yz="-0.317303" zz="0.948303" mass="0.000340" vol="0.000340" />
+
+
+    </link>
+
+
+    <joint name="shoulder" type="revolute">
+
+        <axis xyz="1 0 0" />
+        <limit effort="200" lower="-0.20" upper="2.74" velocity="1.0" />
+
+        <parent link="base_link" />
+        <child link="link1" />
+        <origin xyz="0.0 0.0045 0.03" rpy="0.0 0.0 0.0" />
+
+    </joint>
+
+
+    <!-- -  - - - - - - - - - ELBOW - - - - - - - - -  -->
+
+    <link name="link2">
+        <visual>
+            <geometry>
+                <mesh filename="package://odarm/meshes/link3.dae" scale="1 1 1" />
+            </geometry>
+            <material name="orange">
+                <color rgba="${255/255} ${140/255} ${0/255} 1.0" />
+            </material>
+            <origin xyz="0.0594107529521 -0.5709   -0.223 " rpy="0.0 0.0 0.0" />
+        </visual>
+
+        <collision>
+            <origin xyz="0.0594107529521 -0.5709   -0.223 " rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://odarm/meshes/boxL3.dae" scale="1 1 1" />
+            </geometry>
+        </collision>
+
+        <xacro:inertia_cal xx="0.998935" xy="0.042751" xz="-0.017379" yy="0.788307" yz="0.614850" zz="0.788453" mass="0.000303" vol="0.000303" />
+
+    </link>
+
+    <joint name="elbow" type="continuous">
+        <axis xyz="1.0 0.0 0.0" />
+        <parent link="link1" />
+        <child link="link2" />
+        <origin xyz="-0.0594107529521 0.5709   0.19 " rpy="0.0 0.0 0.0" />
+    </joint>
+
+
+    <!-- -  - - - - - - - -WRIST- - - - - - - - - - -  -->
+    <link name="link3">
+        <visual>
+            <geometry>
+                <mesh filename="package://odarm/meshes/link4.dae" scale="1 1 1" />
+            </geometry>
+            <material name="blue">
+                <color rgba="${0/255} ${0/255} ${255/255} 1.0" />
+            </material>
+            <origin xyz="0 0 0" rpy="0.0 0.0 0.0" />
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://odarm/meshes/boxL4.dae" scale="1 1 1" />
+            </geometry>
+        </collision>
+        <xacro:inertia_cal xx="0.998679" xy="-0.000695" xz="0.051389" yy="0.913907" yz="0.405419" zz="0.912685" mass="0.000175" vol="0.000175" />
+
+
+    </link>
+
+    <joint name="wrist" type="revolute">
+        <limit lower="-0.73" upper="3.14" effort="200.0" velocity="1.0" />
+        <axis xyz="1.0 0.0 0.0" />
+        <parent link="link2" />
+        <child link="link3" />
+        <origin xyz="0.01 -0.365001 0.28 " rpy="0.0 0.0 0.0" />
+    </joint>
+
+    <!-- - - - - - - - - - -HAND - - - - - - - - - -->
+    <link name="link4">
+        <visual>
+            <geometry>
+                <mesh filename="package://odarm/meshes/GRIPPER_DAE/base.dae" scale="1 1 1" />
+            </geometry>
+            <material name="blue">
+                <color rgba="${0/255} ${0/255} ${255/255} 1.0" />
+            </material>
+            <origin xyz="-0.001 0.01 -0.021" rpy="0.0 0.0 0.0" />
+        </visual>
+        <collision>
+            <origin xyz="-0.001 0.01 -0.021" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://odarm/meshes/GRIPPER_DAE/base.dae" scale="1 1 1" />
+            </geometry>
+        </collision>
+        <xacro:inertia_cal xx="0.998679" xy="-0.000695" xz="0.051389" yy="0.913907" yz="0.405419" zz="0.912685" mass="0.000175" vol="0.000175" />
+
+
+    </link>
+
+    <joint name="hand" type="continuous">
+        <axis xyz="0 1 0" />
+        <parent link="link3" />
+        <child link="link4" />
+        <origin xyz="0 0.055 0.125" rpy="-2.0 0.0 0.0" />
+    </joint>
+
+    <!-- < - - - - - - - - CAMERA - - - - - - - - - - - - -  -->
+
+    <joint name="camera_joint" type="fixed">
+        <axis xyz="0 1 0" />
+        <origin xyz="0.001452  -0.233  -0.0001 " rpy="-3.119 0 -1.6" />
+        <parent link="link4" />
+        <child link="camera_link" />
+    </joint>
+
+    <!-- Camera -->
+    <link name="camera_link">
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${camera_link} ${camera_link} ${camera_link}" />
+            </geometry>
+        </collision>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${camera_link} ${camera_link} ${camera_link}" />
+            </geometry>
+            <material name="green" />
+        </visual>
+
+        <inertial>
+            <mass value="1e-5" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+        </inertial>
+    </link>
+
+
+    <!-- - - - - - - - - - - KNUCLES - - - - - - - - - -->
+
+
+    <link name="link5">
+        <visual>
+            <geometry>
+                <mesh filename="package://odarm/meshes/GRIPPER_DAE/parte1.dae" scale="1 1 1" />
+            </geometry>
+            <material name="blue">
+                <color rgba="${0/255} ${0/255} ${255/255} 1.0" />
+            </material>
+            <origin xyz="0 0 0.0" rpy="0.0 0.0 0.0" />
+
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://odarm/meshes/GRIPPER_DAE/parte1.dae" scale="1 1 1" />
+            </geometry>
+        </collision>
+        <xacro:inertia_cal xx="0.998679" xy="-0.000695" xz="0.051389" yy="0.913907" yz="0.405419" zz="0.912685" mass="0.000175" vol="0.000175" />
+    </link>
+
+
+    <joint name="right_knuckles" type="revolute">
+        <parent link="link4" />
+        <child link="link5" />
+        <origin xyz="0.109902  -0.074139 -0.01 " rpy="0 0 0.0" />
+        <axis xyz="0 0 1 " />
+        <limit effort="200" lower="0.60" upper="1.52" velocity="1.0" />
+    </joint>
+
+
+    <link name="link6">
+        <visual>
+            <geometry>
+                <mesh filename="package://odarm/meshes/GRIPPER_DAE/parte1.dae" scale="1 1 1" />
+            </geometry>
+            <material name="blue">
+                <color rgba="${0/255} ${0/255} ${255/255} 1.0" />
+            </material>
+            <origin xyz="0 0 0.0" rpy="0.0 0.0 0.0" />
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://odarm/meshes/GRIPPER_DAE/parte1.dae" scale="1 1 1" />
+            </geometry>
+        </collision>
+        <xacro:inertia_cal xx="0.998679" xy="-0.000695" xz="0.051389" yy="0.913907" yz="0.405419" zz="0.912685" mass="0.000175" vol="0.000175" />
+    </link>
+
+
+    <joint name="left_knuckles" type="revolute">
+        <parent link="link4" />
+        <child link="link6" />
+        <origin xyz="-0.109902  -0.074139 -0.01 " rpy="0 0 0.0" />
+        <axis xyz="0 0 1 " />
+        <limit effort="200" lower="-1.52" upper="-0.53" velocity="1.0" />
+        <!-- <mimic joint="right_knuckles" multiplier="-1" offset="0" /> -->
+    </joint>
+    <!-- - - - - - - - - - - FINGERS - - - - - - - - - -->
+    <link name="link7">
+        <visual>
+            <geometry>
+                <mesh filename="package://odarm/meshes/GRIPPER_DAE/finerr.dae" scale="1 1 1" />
+            </geometry>
+            <material name="blue">
+                <color rgba="${0/255} ${0/255} ${255/255} 1.0" />
+            </material>
+            <origin xyz="0 0 0.0" rpy="0.0 0.0 0.0" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://odarm/meshes/GRIPPER_DAE/finerr.dae" scale="1 1 1" />
+            </geometry>
+        </collision>
+        <xacro:inertia_cal xx="0.998679" xy="-0.000695" xz="0.051389" yy="0.913907" yz="0.405419" zz="0.912685" mass="0.000175" vol="0.000175" />
+
+    </link>
+
+
+    <joint name="left_finger" type="revolute">
+        <parent link="link6" />
+        <child link="link7" />
+        <origin xyz="0.000606 -0.097249 0.027551  " rpy="0 0 -0.5" />
+        <axis xyz="0 0 1 " />
+
+        <limit effort="200" lower="0.52" upper="1.21" velocity="1.0" />
+        <!-- <mimic joint="right_knuckles" multiplier="1" offset="0.6" /> -->
+    </joint>
+
+    <link name="link8">
+        <visual>
+            <geometry>
+                <mesh filename="package://odarm/meshes/GRIPPER_DAE/parte2.dae" scale="1 1 1" />
+            </geometry>
+            <material name="blue">
+                <color rgba="${0/255} ${0/255} ${255/255} 1.0" />
+            </material>
+            <origin xyz="0 0 0.0" rpy="0.0 0.0 0.0" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://odarm/meshes/GRIPPER_DAE/parte2.dae" scale="1 1 1" />
+            </geometry>
+        </collision>
+        <xacro:inertia_cal xx="0.998679" xy="-0.000695" xz="0.051389" yy="0.913907" yz="0.405419" zz="0.912685" mass="0.000175" vol="0.000175" />
+
+    </link>
+
+
+    <joint name="right_finger" type="revolute">
+        <parent link="link5" />
+        <child link="link8" />
+        <origin xyz="-0.000606 -0.097249 0.027551  " rpy="0 0 0.5" />
+        <axis xyz="0 0 1 " />
+
+        <limit effort="200" lower="-1.21" upper="-0.52" velocity="1.0" />
+        <!-- <mimic joint="right_knuckles" multiplier="-1" offset="-0.6" /> -->
+    </joint>
+
+
+    <!-- COLORS -->
+
+    <gazebo reference="base_link">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <gazebo reference="link1">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <gazebo reference="link2">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+
+    <gazebo reference="link3">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <gazebo reference="link4">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <gazebo reference="link5">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <gazebo reference="link6">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+    <gazebo reference="link7">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <gazebo reference="link8">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <gazebo reference="camera_link">
+        <material>Gazebo/Green</material>
+    </gazebo>
+
+
+    <!--  TRANSMISSION -->
+
+    <transmission name="trans_shoulder">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="shoulder">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="shoulder_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="trans_elbow">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="elbow">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="elbow_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="trans_wrist">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="wrist">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="wrist_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="trans_hand">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="hand">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="hand_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="trans_right_knuckles">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="right_knuckles">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="right_knuckles_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+    
+        <transmission name="trans_left_knuckles">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="left_knuckles">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="left_knuckles_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission> 
+
+    <transmission name="trans_left_finger">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="left_finger">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="left_finger_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission> 
+
+        <transmission name="trans_right_finger">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="right_finger">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="right_finger_motor">
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission> 
+
+
+    <!--  PLUGINS -->
+
+
+    <gazebo>
+        <plugin name="control" filename="libgazebo_ros_control.so">
+            <legacyModeNS>true</legacyModeNS>
+            <robotNamespace>odamArm</robotNamespace>
+        </plugin>
+    </gazebo>
+
+    <gazebo>
+        <plugin filename="libgazebo_ros_joint_state_publisher.so" name="joint_state_publisher">
+            <jointName>shoulder,elbow,wrist,hand,right_knuckles,left_knuckles,right_finger,left_finger</jointName>
+        </plugin>
+    </gazebo>
+
+    <!-- camera -->
+    <gazebo reference="camera_link">
+        <sensor type="camera" name="camera1">
+            <update_rate>30.0</update_rate>
+            <camera name="head">
+                <horizontal_fov>1.3962634</horizontal_fov>
+                <image>
+                    <width>800</width>
+                    <height>800</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.02</near>
+                    <far>300</far>
+                </clip>
+                <noise>
+                    <type>gaussian</type>
+                    <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+                    <mean>0.0</mean>
+                    <stddev>0.007</stddev>
+                </noise>
+            </camera>
+            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>0.0</updateRate>
+                <cameraName>odam/camera1</cameraName>
+                <imageTopicName>image_raw</imageTopicName>
+                <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                <frameName>camera_link</frameName>
+                <hackBaseline>0.07</hackBaseline>
+                <distortionK1>0.0</distortionK1>
+                <distortionK2>0.0</distortionK2>
+                <distortionK3>0.0</distortionK3>
+                <distortionT1>0.0</distortionT1>
+                <distortionT2>0.0</distortionT2>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+
+</robot>
+
+
+
+
+
+
